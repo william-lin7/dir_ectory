@@ -18,19 +18,23 @@ int main(int argc, char *argv[]){
   printf("Listing all files:\n");
   struct dirent *d;
   int size = 0;
+  char *c[100];
   printf("Directories:\n");
   while (d = readdir(dr)){
     if (d->d_type == 4){
       printf("%s\n", d->d_name);
       struct stat s;
-      stat(d->d_name, &s);
+      strcat(c, argv[1]);
+      strcat(c, "/");
+      strcat(c, d->d_name);
+      stat(c, &s);
       if (errno){
         printf("Error %d: %s\n", errno, strerror(errno));
       }
       else{
-        printf("%d\n", s.st_size);
         size += s.st_size;
       }
+      strcpy(c, "");
     }
   }
   dr = opendir(argv[1]);
@@ -43,14 +47,17 @@ int main(int argc, char *argv[]){
     if (d->d_type == 8){
       printf("%s\n", d->d_name);
       struct stat s;
-      stat(d->d_name, &s);
+      strcat(c, argv[1]);
+      strcat(c, "/");
+      strcat(c, d->d_name);
+      stat(c, &s);
       if (errno){
         printf("Error %d: %s\n", errno, strerror(errno));
       }
       else{
-        printf("%d\n", s.st_size);
         size += s.st_size;
       }
+      strcpy(c, "");
     }
   }
   printf("\nTotal directory size: %d Bytes\n", size);
